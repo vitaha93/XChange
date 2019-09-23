@@ -15,6 +15,8 @@ import org.knowm.xchange.currency.Currency;
  */
 public final class FundingRecord implements Serializable {
 
+  private static final long serialVersionUID = 3788398035845873448L;
+
   /** Crypto currency address for deposit/withdrawal */
   private final String address;
 
@@ -283,8 +285,9 @@ public final class FundingRecord implements Serializable {
 
   /** Enum representing funding transaction type */
   public enum Type {
-    WITHDRAWAL,
-    DEPOSIT;
+    WITHDRAWAL(false),
+    DEPOSIT(true),
+    AIRDROP(true);
 
     private static final Map<String, Type> fromString = new HashMap<>();
 
@@ -292,8 +295,22 @@ public final class FundingRecord implements Serializable {
       for (Type type : values()) fromString.put(type.toString(), type);
     }
 
+    private final boolean inflow;
+
+    Type(final boolean inflow) {
+      this.inflow = inflow;
+    }
+
     public static Type fromString(String ledgerTypeString) {
       return fromString.get(ledgerTypeString.toUpperCase());
+    }
+
+    public boolean isInflowing() {
+      return this.inflow;
+    }
+
+    public boolean isOutflowing() {
+      return !this.inflow;
     }
   }
 
